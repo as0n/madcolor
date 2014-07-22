@@ -1,0 +1,40 @@
+.mc {
+	box-sizing : content-box;
+	height : 100%;
+	width : 100%;
+}
+.mc .caption {
+	background-color : rgba(0, 0, 0, 0);
+	font-family : mono;
+	font-size : 12px;
+	margin : 0;
+	opacity : 0.3;
+	padding : 3px;
+	position : fixed;
+		bottom : 10px;
+	transition : 0.5s;
+}
+.mc .caption:hover {
+	background-color : rgba(0,0,0,0.5);
+	color : white;
+	opacity : 1;
+}
+.mc .caption.hexCode {
+	left : 10px;
+}
+.mc .caption.map {
+	right : 10px;
+}
+
+.mc #canvaslist {
+	height : 100px;
+	margin : 0;
+	padding : 0;
+	position : relative;
+	width : 200px;
+}
+.mc canvas {
+	height : 100%;
+	position : absolute;
+	width : 100%;
+}
