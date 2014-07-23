@@ -1,8 +1,14 @@
 .mc {
 	box-sizing : content-box;
+	position : relative;
+}
+body.mc {
 	height : 100%;
+	margin : 0;
+	position : fixed;
 	width : 100%;
 }
+
 .mc .caption {
 	background-color : rgba(0, 0, 0, 0);
 	font-family : mono;
@@ -10,7 +16,7 @@
 	margin : 0;
 	opacity : 0.3;
 	padding : 3px;
-	position : fixed;
+	position : absolute;
 		bottom : 10px;
 	transition : 0.5s;
 }
