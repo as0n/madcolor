@@ -14,8 +14,8 @@ function Color(r, g, b) {
 	this.b = Math.min(Math.max(Math.round(b), 0), 255);
 }
 
-Color.random = function(r) {
-	return new Color(rand(r), rand(r), rand(r));
+Color.random = function(min, max) {
+	return new Color(min + rand(max-min), min + rand(max-min), min + rand(max-min));
 };
 
 Color.randomSat = function() {
@@ -62,6 +62,72 @@ Color.prototype.toHSV = function() {
 		v : M/255
 	};
 };
+function Polynomial(args) {
+	this.coefs = [];
+	if (arguments[0] instanceof Array) {
+		this.coefs = arguments[0];
+	}
+	else for (var i = 0; i<arguments.length; i++) {
+		this.coefs.push(arguments[i]);
+	}
+}
+
+Polynomial.evaluate = function(coefs, x) {
+	if (coefs.length === 0) return 0;
+	return coefs.shift() + x*Polynomial.evaluate(coefs, x);
+};
+
+Polynomial.lagrange = function(points) { // points = [[0,2], [1,5], [12,pi], ...]
+	var res = new Polynomial();
+	for (var j = 0; j<points.length; j++) {
+		var prod = new Polynomial(1),
+			pj = points[j];
+		for (var i = 0; i<points.length; i++) {
+			var pi = points[i];
+			if (i != j) {
+				var p = new Polynomial(-pi[0], 1).lin(1/(pj[0] - pi[0]));
+				prod = prod.mult(p);
+			}
+		}
+		res = res.add(prod.lin(pj[1]));
+	}
+	return res;
+};
+
+Polynomial.prototype.coef = function(idx) {
+	return this.coefs[idx] || 0;
+};
+
+Polynomial.prototype.calc = function(x) {
+	return Polynomial.evaluate(this.coefs.slice(), x);
+};
+
+Polynomial.prototype.add = function(p) {
+	var t = Math.max(this.coefs.length, p.coefs.length),
+		res = [];
+	for (var i = 0; i<t; i++) {
+		res.push(this.coef(i) + p.coef(i));
+	}
+	return new Polynomial(res);
+};
+
+Polynomial.prototype.lin = function(a) {
+	var res = [];
+	for (var i = 0; i<this.coefs.length; i++) res.push(a*this.coef(i));
+	return new Polynomial(res);
+};
+
+Polynomial.prototype.mult = function(p) {
+	var t = this.coefs.length + p.coefs.length - 1,
+		res = [];
+	for (var i = 0; i<t; i++) {
+		res[i] = 0;
+		for (var j = 0; j<=i; j++) {
+			res[i] += this.coef(j)*p.coef(i-j);
+		}
+	}
+	return new Polynomial(res);
+};
 madcolor = (function() {
 	var defOptions = {
 		colorPeriod : {
@@ -89,9 +155,14 @@ madcolor = (function() {
 			attr : "mc-show-hexcode",
 			parser : function(el) { if (el === "true") return true; if (el === "false") return false; return null; }
 		},
-		colorRange : {
+		colorRangeMax : {
 			default : 255,
-			attr : "mc-color-range",
+			attr : "mc-color-range-max",
+			parser : parseInt
+		},
+		colorRangeMin : {
+			default : 0,
+			attr : "mc-color-range-min",
 			parser : parseInt
 		}
 	};
@@ -175,7 +246,7 @@ madcolor = (function() {
 			}
 		}
 
-		while (Color.list.length < options.listSize) Color.list.push(Color.random(options.colorRange));
+		while (Color.list.length < options.listSize) Color.list.push(Color.random(options.colorRangeMin, options.colorRangeMax));
 
 		function setColor(col) {
 			var s = col.toString();
@@ -185,7 +256,7 @@ madcolor = (function() {
 
 		function colorUpdate() {
 			Color.list.shift();
-			Color.list.push(Color.random(options.colorRange));
+			Color.list.push(Color.random(options.colorRangeMin, options.colorRangeMax));
 			poly = Polynomial.fromColorList(Color.list, listOffset);
 			lastColorUpdate = new Date();
 		}
@@ -206,7 +277,7 @@ madcolor = (function() {
 
 				ctxTrace.clearRect(0,0,cnvsWidth,cnvsHeight);
 				ctxTrace.putImageData(imgdata, 0, 0);
-				
+
 				ctxTrace.beginPath();
 				ctxTrace.moveTo(lastX, lastY);
 				ctxTrace.lineTo(x, y);
@@ -239,69 +310,3 @@ madcolor = (function() {
 	apply.color = Color;
 	return apply;
 })();
-function Polynomial(args) {
-	this.coefs = [];
-	if (arguments[0] instanceof Array) {
-		this.coefs = arguments[0];
-	}
-	else for (var i = 0; i<arguments.length; i++) {
-		this.coefs.push(arguments[i]);
-	}
-}
-
-Polynomial.evaluate = function(coefs, x) {
-	if (coefs.length === 0) return 0;
-	return coefs.shift() + x*Polynomial.evaluate(coefs, x);
-};
-
-Polynomial.lagrange = function(points) { // points = [[0,2], [1,5], [12,pi], ...]
-	var res = new Polynomial();
-	for (var j = 0; j<points.length; j++) {
-		var prod = new Polynomial(1),
-			pj = points[j];
-		for (var i = 0; i<points.length; i++) {
-			var pi = points[i];
-			if (i != j) {
-				var p = new Polynomial(-pi[0], 1).lin(1/(pj[0] - pi[0]));
-				prod = prod.mult(p);
-			}
-		}
-		res = res.add(prod.lin(pj[1]));
-	}
-	return res;
-};
-
-Polynomial.prototype.coef = function(idx) {
-	return this.coefs[idx] || 0;
-};
-
-Polynomial.prototype.calc = function(x) {
-	return Polynomial.evaluate(this.coefs.slice(), x);
-};
-
-Polynomial.prototype.add = function(p) {
-	var t = Math.max(this.coefs.length, p.coefs.length),
-		res = [];
-	for (var i = 0; i<t; i++) {
-		res.push(this.coef(i) + p.coef(i));
-	}
-	return new Polynomial(res);
-};
-
-Polynomial.prototype.lin = function(a) {
-	var res = [];
-	for (var i = 0; i<this.coefs.length; i++) res.push(a*this.coef(i));
-	return new Polynomial(res);
-};
-
-Polynomial.prototype.mult = function(p) {
-	var t = this.coefs.length + p.coefs.length - 1,
-		res = [];
-	for (var i = 0; i<t; i++) {
-		res[i] = 0;
-		for (var j = 0; j<=i; j++) {
-			res[i] += this.coef(j)*p.coef(i-j);
-		}
-	}
-	return new Polynomial(res);
-};

@@ -14,8 +14,8 @@ function Color(r, g, b) {
 	this.b = Math.min(Math.max(Math.round(b), 0), 255);
 }
 
-Color.random = function(r) {
-	return new Color(rand(r), rand(r), rand(r));
+Color.random = function(min, max) {
+	return new Color(min + rand(max-min), min + rand(max-min), min + rand(max-min));
 };
 
 Color.randomSat = function() {

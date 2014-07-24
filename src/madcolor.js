@@ -25,9 +25,14 @@ madcolor = (function() {
 			attr : "mc-show-hexcode",
 			parser : function(el) { if (el === "true") return true; if (el === "false") return false; return null; }
 		},
-		colorRange : {
+		colorRangeMax : {
 			default : 255,
-			attr : "mc-color-range",
+			attr : "mc-color-range-max",
+			parser : parseInt
+		},
+		colorRangeMin : {
+			default : 0,
+			attr : "mc-color-range-min",
 			parser : parseInt
 		}
 	};
@@ -111,7 +116,7 @@ madcolor = (function() {
 			}
 		}
 
-		while (Color.list.length < options.listSize) Color.list.push(Color.random(options.colorRange));
+		while (Color.list.length < options.listSize) Color.list.push(Color.random(options.colorRangeMin, options.colorRangeMax));
 
 		function setColor(col) {
 			var s = col.toString();
@@ -121,7 +126,7 @@ madcolor = (function() {
 
 		function colorUpdate() {
 			Color.list.shift();
-			Color.list.push(Color.random(options.colorRange));
+			Color.list.push(Color.random(options.colorRangeMin, options.colorRangeMax));
 			poly = Polynomial.fromColorList(Color.list, listOffset);
 			lastColorUpdate = new Date();
 		}
@@ -142,7 +147,7 @@ madcolor = (function() {
 
 				ctxTrace.clearRect(0,0,cnvsWidth,cnvsHeight);
 				ctxTrace.putImageData(imgdata, 0, 0);
-				
+
 				ctxTrace.beginPath();
 				ctxTrace.moveTo(lastX, lastY);
 				ctxTrace.lineTo(x, y);
