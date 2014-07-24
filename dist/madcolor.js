@@ -50,9 +50,9 @@ madcolor = (function() {
 			this.coefs.push(arguments[i]);
 		}
 	}
-	Polynomial.eval = function(coefs, x) {
-		if (coefs.length == 0) return 0;
-		return coefs.shift() + x*Polynomial.eval(coefs, x);
+	Polynomial.evaluate = function(coefs, x) {
+		if (coefs.length === 0) return 0;
+		return coefs.shift() + x*Polynomial.evaluate(coefs, x);
 	};
 	Polynomial.lagrange = function(points) { // points = [[0,2], [1,5], [12,pi], ...]
 		var res = new Polynomial();
@@ -89,7 +89,7 @@ madcolor = (function() {
 		return this.coefs[idx] || 0;
 	};
 	Polynomial.prototype.calc = function(x) {
-		return Polynomial.eval(this.coefs.slice(), x);
+		return Polynomial.evaluate(this.coefs.slice(), x);
 	};
 	Polynomial.prototype.add = function(p) {
 		var t = Math.max(this.coefs.length, p.coefs.length),
@@ -137,7 +137,7 @@ madcolor = (function() {
 			[x, 0, c],
 			[c, 0, x]
 		][i];
-	}
+	};
 	Color.fromHSV = function(h, s, v) {
 		var C = v*s,
 			m = v - C,
@@ -158,13 +158,13 @@ madcolor = (function() {
 			H = M == this.r ? ((this.g - this.b)/C)%6 :
 				M == this.g ? (this.b - this.r)/C + 2 :
 				(this.r - this.g)/C + 4,
-			h = 60*H
+			h = 60*H;
 		return {
 			h : (h+360)%360,
 			s : C/M,
 			v : M/255
 		};
-	}
+	};
 
 	function apply(el, opt) {
 		var options = {},
@@ -181,7 +181,7 @@ madcolor = (function() {
 			lastX, lastY;
 
 		if (!opt) opt = {};
-		for (key in defOptions) {
+		for (var key in defOptions) {
 			options[key] = (opt[key]!==undefined) ? opt[key] : defOptions[key].default;
 		}
 
@@ -281,7 +281,7 @@ madcolor = (function() {
 			val;
 
 		for (var key in defOptions) {
-			val = el.getAttribute(defOptions[key].attr)
+			val = el.getAttribute(defOptions[key].attr);
 			if (val) opts[key] = defOptions[key].parser(val);
 		}
 
