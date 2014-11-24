@@ -64,3 +64,13 @@ Polynomial.prototype.mult = function(p) {
 	}
 	return new Polynomial(res);
 };
+
+Polynomial.prototype.deriv = function() {
+	return new Polynomial(this.coefs.slice(1));
+};
+
+Polynomial.prototype.int = function(c) {
+	var coefs = [c];
+	for (var i = 0; i<this.coefs.length; i++) coefs.push(this.coefs[i]);
+	return new Polynomial(coefs);
+};
