@@ -1,41 +1,42 @@
 madcolor = (function() {
-	var defOptions = {
-		colorPeriod : {
-			default : 2,
-			attr : "mc-color-period",
-			parser : parseFloat
-		},
-		displayPeriod : {
-			default : 0.2,
-			attr : "mc-display-period",
-			parser : parseFloat
-		},
-		listSize : {
-			default : 5,
-			attr : "mc-list-size",
-			parser : parseInt
-		},
-		showMap : {
-			default : true,
-			attr : "mc-show-map",
-			parser : function(el) { if (el === "true") return true; if (el === "false") return false; return null; }
-		},
-		showHexCode : {
-			default : true,
-			attr : "mc-show-hexcode",
-			parser : function(el) { if (el === "true") return true; if (el === "false") return false; return null; }
-		},
-		colorRangeMax : {
-			default : 255,
-			attr : "mc-color-range-max",
-			parser : parseInt
-		},
-		colorRangeMin : {
-			default : 0,
-			attr : "mc-color-range-min",
-			parser : parseInt
-		}
-	};
+	var parseBool = function(el) { if (el === "true") return true; if (el === "false") return false; return null; },
+		defOptions = {
+			colorPeriod : {
+				default : 2,
+				attr : "mc-color-period",
+				parser : parseFloat
+			},
+			displayPeriod : {
+				default : 0.2,
+				attr : "mc-display-period",
+				parser : parseFloat
+			},
+			listSize : {
+				default : 5,
+				attr : "mc-list-size",
+				parser : parseInt
+			},
+			showMap : {
+				default : true,
+				attr : "mc-show-map",
+				parser : parseBool
+			},
+			showHexCode : {
+				default : true,
+				attr : "mc-show-hexcode",
+				parser : parseBool
+			},
+			colorRangeMax : {
+				default : 255,
+				attr : "mc-color-range-max",
+				parser : parseInt
+			},
+			colorRangeMin : {
+				default : 0,
+				attr : "mc-color-range-min",
+				parser : parseInt
+			}
+		};
 
 	Color.list = [];
 
