@@ -1,25 +1,30 @@
-function rand(n) {
+Math.rand = function(n) {
 	return Math.floor(Math.random()*n);
-}
+};
 
-function int2hex(n) {
+Math.borne = function(x, min, max) {
+	return Math.min(Math.max(x, min), max);
+};
+
+Math.int2hex = function(n) {
 	var s = n.toString(16);
 	while (s.length < 2) s = "0"+s;
 	return s;
-}
+};
 
 function Color(r, g, b) {
-	this.r = Math.min(Math.max(Math.round(r), 0), 255);
-	this.g = Math.min(Math.max(Math.round(g), 0), 255);
-	this.b = Math.min(Math.max(Math.round(b), 0), 255);
+	this.r = Math.borne(Math.round(r), 0, 255);
+	this.g = Math.borne(Math.round(g), 0, 255);
+	this.b = Math.borne(Math.round(b), 0, 255);
 }
 
 Color.random = function(min, max) {
-	return new Color(min + rand(max-min), min + rand(max-min), min + rand(max-min));
+	var d = max - min;
+	return new Color(min + Math.rand(d), min + Math.rand(d), min + Math.rand(d));
 };
 
 Color.randomSat = function() {
-	return Color.fromHSV(rand(360), 1, 1);
+	return Color.fromHSV(Math.rand(360), 1, 1);
 };
 
 Color.HSVMat = function(c, x, i) {
@@ -43,8 +48,8 @@ Color.fromHSV = function(h, s, v) {
 };
 
 Color.prototype.toString = function() {
-	var res = "#"+int2hex(this.r)+int2hex(this.g)+int2hex(this.b);
-	if (res.indexOf('-') != -1 || res.length != 7) console.error("r : "+this.r+" / g : "+this.g+" / b : "+this.b+" -> "+res);
+	var res = "#"+Math.int2hex(this.r)+Math.int2hex(this.g)+Math.int2hex(this.b);
+	//if (res.indexOf('-') != -1 || res.length != 7) console.error("r : "+this.r+" / g : "+this.g+" / b : "+this.b+" -> "+res);
 	return res;
 };
 
