@@ -47,9 +47,12 @@ madcolor(myPsychedelicElement, {
 Attribute name | Object Name | Type | Default | Description
 -------------- | ----------- | ---- | ------- | -----------
 mc-color-period | `colorPeriod` | float / int | 2 | Time (in seconds) between two random colors. The longest the smoothest.
-mc-display-period | `displayPeriod` | float / int | 0.2 | Time (in seconds) between two display ticks (`background-color` transition). This should always be smaller than `displayPeriod` (by a factor of 2 or 3 at least), but it can be increased to reduce lag.
 mc-list-size | `listSize` | int | 5 | Number of point for which to compute the color path (degree of the lagrange polynomial). It can be reduced to increase efficiency. Prefer odd numbers.
 mc-show-map | `showMap` | boolean | true | Wether to display a color map in the bottom right corner of the targeted element.
 mc-show-hexcode | `showHexCode` | boolean | true | Whether to display the current color code (in hex) in the bottom left corner of the targeted element.
 mc-color-range-max | `colorRangeMax` | int[0-255] | 255 | The maximum value for the 3 components (RGB) of the colors. You can adjust this option and the next to generate colors within a certain range of lightness. Can be useful if you want to stick to a pre-existing webdesign.
 mc-color-range-min | `colorRangeMin` | int[0-255] | 0 | The minimum value for the 3 components (RGB) of the colors.
+
+### To-Do list
+
+ - replace random colors + lagrange polynomial paths with [Brownian motion](https://en.wikipedia.org/wiki/Brownian_motion)

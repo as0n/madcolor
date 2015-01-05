@@ -6,11 +6,6 @@ madcolor = (function() {
 				attr : "mc-color-period",
 				parser : parseFloat
 			},
-			displayPeriod : {
-				default : 0.2,
-				attr : "mc-display-period",
-				parser : parseFloat
-			},
 			listSize : {
 				default : 5,
 				attr : "mc-list-size",
@@ -76,8 +71,6 @@ madcolor = (function() {
 		}
 
 		var listOffset = Math.floor(options.listSize/2);
-
-		el.style.transitionDuration = options.displayPeriod+"s";
 
 		if (options.showHexCode) {
 			pHexCode = document.createElement("p");
@@ -157,11 +150,13 @@ madcolor = (function() {
 				lastX = x;
 				lastY = y;
 			}
+
+			window.requestAnimationFrame(display);
 		}
 
 		colorUpdate();
 		setInterval(colorUpdate, options.colorPeriod*1000);
-		setInterval(display, options.displayPeriod*1000);
+		window.requestAnimationFrame(display);
 	}
 
 	var targets = document.getElementsByClassName('mc');
