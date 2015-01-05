@@ -14,16 +14,15 @@ Polynomial.evaluate = function(coefs, x) {
 };
 
 Polynomial.lagrange = function(points) { // points = [[0,2], [1,5], [12,pi], ...]
-	var res = new Polynomial();
+	var res = new Polynomial(),
+		prod, pi, pj;
 	for (var j = 0; j<points.length; j++) {
-		var prod = new Polynomial(1),
-			pj = points[j];
+		prod = new Polynomial(1);
+		pj = points[j];
+
 		for (var i = 0; i<points.length; i++) {
-			var pi = points[i];
-			if (i != j) {
-				var p = new Polynomial(-pi[0], 1).lin(1/(pj[0] - pi[0]));
-				prod = prod.mult(p);
-			}
+			pi = points[i];
+			if (i != j) prod = prod.mult(new Polynomial(-pi[0], 1).lin(1/(pj[0] - pi[0])));
 		}
 		res = res.add(prod.lin(pj[1]));
 	}
