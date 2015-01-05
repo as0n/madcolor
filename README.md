@@ -53,3 +53,7 @@ mc-show-map | `showMap` | boolean | true | Wether to display a color map in the 
 mc-show-hexcode | `showHexCode` | boolean | true | Whether to display the current color code (in hex) in the bottom left corner of the targeted element.
 mc-color-range-max | `colorRangeMax` | int[0-255] | 255 | The maximum value for the 3 components (RGB) of the colors. You can adjust this option and the next to generate colors within a certain range of lightness. Can be useful if you want to stick to a pre-existing webdesign.
 mc-color-range-min | `colorRangeMin` | int[0-255] | 0 | The minimum value for the 3 components (RGB) of the colors.
+
+### To-Do list
+
+ - replace random colors + lagrange polynomial paths with [Brownian motion](https://en.wikipedia.org/wiki/Brownian_motion)
