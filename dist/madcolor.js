@@ -1,25 +1,30 @@
-function rand(n) {
+Math.rand = function(n) {
 	return Math.floor(Math.random()*n);
-}
+};
 
-function int2hex(n) {
+Math.borne = function(x, min, max) {
+	return Math.min(Math.max(x, min), max);
+};
+
+Math.int2hex = function(n) {
 	var s = n.toString(16);
 	while (s.length < 2) s = "0"+s;
 	return s;
-}
+};
 
 function Color(r, g, b) {
-	this.r = Math.min(Math.max(Math.round(r), 0), 255);
-	this.g = Math.min(Math.max(Math.round(g), 0), 255);
-	this.b = Math.min(Math.max(Math.round(b), 0), 255);
+	this.r = Math.borne(Math.round(r), 0, 255);
+	this.g = Math.borne(Math.round(g), 0, 255);
+	this.b = Math.borne(Math.round(b), 0, 255);
 }
 
 Color.random = function(min, max) {
-	return new Color(min + rand(max-min), min + rand(max-min), min + rand(max-min));
+	var d = max - min;
+	return new Color(min + Math.rand(d), min + Math.rand(d), min + Math.rand(d));
 };
 
 Color.randomSat = function() {
-	return Color.fromHSV(rand(360), 1, 1);
+	return Color.fromHSV(Math.rand(360), 1, 1);
 };
 
 Color.HSVMat = function(c, x, i) {
@@ -43,8 +48,8 @@ Color.fromHSV = function(h, s, v) {
 };
 
 Color.prototype.toString = function() {
-	var res = "#"+int2hex(this.r)+int2hex(this.g)+int2hex(this.b);
-	if (res.indexOf('-') != -1 || res.length != 7) console.error("r : "+this.r+" / g : "+this.g+" / b : "+this.b+" -> "+res);
+	var res = "#"+Math.int2hex(this.r)+Math.int2hex(this.g)+Math.int2hex(this.b);
+	//if (res.indexOf('-') != -1 || res.length != 7) console.error("r : "+this.r+" / g : "+this.g+" / b : "+this.b+" -> "+res);
 	return res;
 };
 
@@ -78,16 +83,15 @@ Polynomial.evaluate = function(coefs, x) {
 };
 
 Polynomial.lagrange = function(points) { // points = [[0,2], [1,5], [12,pi], ...]
-	var res = new Polynomial();
+	var res = new Polynomial(),
+		prod, pi, pj;
 	for (var j = 0; j<points.length; j++) {
-		var prod = new Polynomial(1),
-			pj = points[j];
+		prod = new Polynomial(1);
+		pj = points[j];
+
 		for (var i = 0; i<points.length; i++) {
-			var pi = points[i];
-			if (i != j) {
-				var p = new Polynomial(-pi[0], 1).lin(1/(pj[0] - pi[0]));
-				prod = prod.mult(p);
-			}
+			pi = points[i];
+			if (i != j) prod = prod.mult(new Polynomial(-pi[0], 1).lin(1/(pj[0] - pi[0])));
 		}
 		res = res.add(prod.lin(pj[1]));
 	}
@@ -144,11 +148,6 @@ madcolor = (function() {
 			colorPeriod : {
 				default : 2,
 				attr : "mc-color-period",
-				parser : parseFloat
-			},
-			displayPeriod : {
-				default : 0.2,
-				attr : "mc-display-period",
 				parser : parseFloat
 			},
 			listSize : {
@@ -216,8 +215,6 @@ madcolor = (function() {
 		}
 
 		var listOffset = Math.floor(options.listSize/2);
-
-		el.style.transitionDuration = options.displayPeriod+"s";
 
 		if (options.showHexCode) {
 			pHexCode = document.createElement("p");
@@ -297,11 +294,13 @@ madcolor = (function() {
 				lastX = x;
 				lastY = y;
 			}
+
+			window.requestAnimationFrame(display);
 		}
 
 		colorUpdate();
 		setInterval(colorUpdate, options.colorPeriod*1000);
-		setInterval(display, options.displayPeriod*1000);
+		window.requestAnimationFrame(display);
 	}
 
 	var targets = document.getElementsByClassName('mc');
